@@ -163,6 +163,7 @@ const canvas = document.getElementById('canvas');
 const libraryItems = document.getElementById('library-items');
 const contextMenuEl = document.getElementById('context-menu');
 const dragGhostEl = document.getElementById('drag-ghost');
+const clearBtn = document.getElementById('clear-btn');
 const zoomInBtn = document.getElementById('zoom-in');
 const zoomOutBtn = document.getElementById('zoom-out');
 const zoomFitBtn = document.getElementById('zoom-fit');
@@ -172,21 +173,88 @@ const zoomLevelEl = document.getElementById('zoom-level');
 // Zoom System
 // ============================================================
 
+let panX = 0, panY = 0;
+
 function setZoom(z) {
   state.zoom = Math.max(0.1, Math.min(1.5, z));
-  canvas.style.transform = 'scale(' + state.zoom + ')';
+  updateCanvasTransform();
   zoomLevelEl.textContent = Math.round(state.zoom * 100) + '%';
 }
+
+function updateCanvasTransform() {
+  canvas.style.transform = 'translate(' + panX + 'px, ' + panY + 'px) scale(' + state.zoom + ')';
+}
+
+// --- Canvas panning (middle-click or Space+left-click) ---
+let isPanning = false;
+let panStartX = 0, panStartY = 0;
+let panStartPanX = 0, panStartPanY = 0;
+let spaceHeld = false;
+
+document.addEventListener('keydown', (e) => {
+  if (e.code === 'Space' && !e.repeat && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+    spaceHeld = true;
+    canvasWrapper.style.cursor = 'grab';
+  }
+});
+
+document.addEventListener('keyup', (e) => {
+  if (e.code === 'Space') {
+    spaceHeld = false;
+    if (!isPanning) canvasWrapper.style.cursor = '';
+  }
+});
+
+canvasWrapper.addEventListener('mousedown', (e) => {
+  // Middle-click or Space+left-click
+  if (e.button === 1 || (spaceHeld && e.button === 0)) {
+    e.preventDefault();
+    isPanning = true;
+    panStartX = e.clientX;
+    panStartY = e.clientY;
+    panStartPanX = panX;
+    panStartPanY = panY;
+    canvasWrapper.style.cursor = 'grabbing';
+  }
+});
+
+document.addEventListener('mousemove', (e) => {
+  if (!isPanning) return;
+  panX = panStartPanX + (e.clientX - panStartX);
+  panY = panStartPanY + (e.clientY - panStartY);
+  updateCanvasTransform();
+});
+
+document.addEventListener('mouseup', (e) => {
+  if (isPanning) {
+    const didMove = Math.abs(e.clientX - panStartX) > 3 || Math.abs(e.clientY - panStartY) > 3;
+    isPanning = false;
+    canvasWrapper.style.cursor = spaceHeld ? 'grab' : '';
+    // If it was just a click (no drag), deselect
+    if (!didMove && !spaceHeld) {
+      state.selectedId = null;
+      render();
+    }
+  }
+});
+
+clearBtn.addEventListener('click', () => {
+  state.elements = [];
+  state.selectedId = null;
+  render();
+});
 
 zoomInBtn.addEventListener('click', () => setZoom(state.zoom + 0.1));
 zoomOutBtn.addEventListener('click', () => setZoom(state.zoom - 0.1));
 zoomFitBtn.addEventListener('click', () => {
-  // Fit tallest track on screen
+  // Fit tallest track on screen and reset pan
   const maxH = state.tracks.reduce((max, t) => {
     const m = ELEMENT_META[t.filename];
     return m ? Math.max(max, m.svgHeight) : max;
   }, 2000);
   const viewH = canvasWrapper.clientHeight - 40;
+  panX = 0;
+  panY = 0;
   setZoom(viewH / maxH);
 });
 
@@ -202,8 +270,8 @@ canvasWrapper.addEventListener('wheel', (e) => {
 // Convert mouse event to canvas coordinates (accounting for scroll + zoom)
 function canvasCoords(e) {
   const rect = canvasWrapper.getBoundingClientRect();
-  const x = (e.clientX - rect.left + canvasWrapper.scrollLeft) / state.zoom;
-  const y = (e.clientY - rect.top + canvasWrapper.scrollTop) / state.zoom;
+  const x = (e.clientX - rect.left - panX) / state.zoom;
+  const y = (e.clientY - rect.top - panY) / state.zoom;
   return { x, y };
 }
 
@@ -267,9 +335,24 @@ function renderElement(el, stackIndex) {
   div.style.zIndex = 2 + stackIndex;
   div.dataset.elementId = el.id;
 
-  const img = document.createElement('img');
-  img.src = 'elements/' + el.filename;
-  div.appendChild(img);
+  // Inline SVG with currentColor strokes for hover coloring
+  if (svgCache[el.filename]) {
+    // Replace all stroke colors with currentColor
+    let svgText = svgCache[el.filename];
+    svgText = svgText.replace(/stroke="(black|#000|#000000)"/gi, 'stroke="currentColor"');
+    svgText = svgText.replace(/stroke:#000[^;]*/gi, 'stroke:currentColor');
+    div.innerHTML = svgText;
+    const svg = div.querySelector('svg');
+    if (svg) {
+      svg.setAttribute('width', '100%');
+      svg.setAttribute('height', '100%');
+      svg.style.pointerEvents = 'none';
+    }
+  } else {
+    const img = document.createElement('img');
+    img.src = 'elements/' + el.filename;
+    div.appendChild(img);
+  }
   canvas.appendChild(div);
 }
 
@@ -359,19 +442,23 @@ function showSnapGuide(x, height) {
 // Ghost Element (follows cursor during drag)
 // ============================================================
 
+let ghostW = 0, ghostH = 0;
+
 function showGhost(imgSrc, width, height) {
   dragGhostEl.innerHTML = '';
+  ghostW = width * state.zoom;
+  ghostH = height * state.zoom;
   const img = document.createElement('img');
   img.src = imgSrc;
-  img.style.width = (width * state.zoom) + 'px';
-  img.style.height = (height * state.zoom) + 'px';
+  img.style.width = ghostW + 'px';
+  img.style.height = ghostH + 'px';
   dragGhostEl.appendChild(img);
   dragGhostEl.classList.remove('hidden');
 }
 
 function moveGhost(e) {
-  dragGhostEl.style.left = (e.clientX + 8) + 'px';
-  dragGhostEl.style.top = (e.clientY + 8) + 'px';
+  dragGhostEl.style.left = (e.clientX - ghostW / 2) + 'px';
+  dragGhostEl.style.top = (e.clientY - ghostH / 2) + 'px';
 }
 
 function hideGhost() {
@@ -404,21 +491,22 @@ function startElementDrag(e, elementId) {
   const el = state.elements.find(x => x.id === elementId);
   if (!el) return;
 
-  // Select on drag start
   state.selectedId = elementId;
+
+  // Compute offset between mouse Y and the element's pin row Y
+  const coords = canvasCoords(e);
+  const pinY = PIN_HOLE_START + (el.pinRow * PIN_HOLE_SPACING);
 
   drag = {
     type: 'element',
     elementId,
+    origBayIndex: el.bayIndex,
+    origPinRow: el.pinRow,
+    origFilename: el.filename,
+    offsetY: coords.y - pinY,
   };
 
-  const meta = ELEMENT_META[el.filename];
-  showGhost('elements/' + el.filename, meta.svgWidth, meta.svgHeight);
-  moveGhost(e);
-
-  // Dim the original
-  const domEl = canvas.querySelector('[data-element-id="' + elementId + '"]');
-  if (domEl) domEl.classList.add('dragging');
+  render();
 }
 
 // --- Track Drag ---
@@ -442,17 +530,14 @@ function startTrackDrag(e, trackId) {
 document.addEventListener('mousemove', (e) => {
   if (!drag) return;
 
-  if (drag.type === 'library' || drag.type === 'element') {
+  if (drag.type === 'library') {
     moveGhost(e);
-
-    // Show indicators on canvas
     clearIndicators();
     const coords = canvasCoords(e);
-    const item = drag.type === 'library' ? drag.item : null;
+    const item = drag.item;
     const isEtrack = item && item.category === 'etrack';
 
     if (isEtrack) {
-      // Show where the etrack would snap to
       const snapX = snapTrackPosition(coords.x);
       const meta = ELEMENT_META[item.filename];
       showSnapGuide(snapX, meta ? meta.svgHeight : 2000);
@@ -462,6 +547,22 @@ document.addEventListener('mousemove', (e) => {
         showBayHighlight(bay);
         showPinGuide(bay, coords.y);
       }
+    }
+  }
+
+  if (drag.type === 'element') {
+    const coords = canvasCoords(e);
+    const el = state.elements.find(x => x.id === drag.elementId);
+    if (!el) return;
+
+    const bayIndex = detectBay(coords.x);
+    if (bayIndex !== null) {
+      const pinRow = nearestPinRow(coords.y - drag.offsetY, state.tracks[bayIndex].filename);
+      const bayWidth = getBayWidth(bayIndex);
+      el.bayIndex = bayIndex;
+      el.pinRow = pinRow;
+      el.filename = getMatchingFilename(el.filename, bayWidth);
+      render();
     }
   }
 
@@ -549,28 +650,11 @@ document.addEventListener('mouseup', (e) => {
   }
 
   if (drag.type === 'element') {
-    hideGhost();
-    clearIndicators();
-
-    const el = state.elements.find(x => x.id === drag.elementId);
-    if (el) {
-      const rect = canvasWrapper.getBoundingClientRect();
-      if (e.clientX >= rect.left && e.clientX <= rect.right &&
-          e.clientY >= rect.top && e.clientY <= rect.bottom) {
-
-        const coords = canvasCoords(e);
-        const bayIndex = detectBay(coords.x);
-        if (bayIndex !== null) {
-          const pinRow = nearestPinRow(coords.y, state.tracks[bayIndex].filename);
-          el.bayIndex = bayIndex;
-          el.pinRow = pinRow;
-          // Auto-swap width to match bay
-          const bayWidth = getBayWidth(bayIndex);
-          el.filename = getMatchingFilename(el.filename, bayWidth);
-        }
-      }
-    }
-    render();
+    // Position already updated in real-time during mousemove — just finalize
+    state.selectedId = null;
+    // Remove .selected without full re-render to avoid flicker (hover CSS takes over)
+    const domEl = canvas.querySelector('.element.selected');
+    if (domEl) domEl.classList.remove('selected');
     drag = null;
     return;
   }
@@ -708,9 +792,12 @@ function reindexElements() {
 // ============================================================
 
 canvas.addEventListener('mousedown', (e) => {
-  if (e.button !== 0) return; // left click only
+  if (e.button !== 0) return;
 
   dismissContextMenu();
+
+  // Space held → panning handled by canvasWrapper listener
+  if (spaceHeld) return;
 
   // Check if clicking on an element
   const elDiv = e.target.closest('.element');
@@ -728,9 +815,14 @@ canvas.addEventListener('mousedown', (e) => {
     return;
   }
 
-  // Click on empty canvas → deselect
-  state.selectedId = null;
-  render();
+  // Empty canvas → start pan (deselect on mouseup if no movement)
+  isPanning = true;
+  panStartX = e.clientX;
+  panStartY = e.clientY;
+  panStartPanX = panX;
+  panStartPanY = panY;
+  canvasWrapper.style.cursor = 'grabbing';
+  e.preventDefault();
 });
 
 // Library mousedown
@@ -766,8 +858,15 @@ document.addEventListener('keydown', (e) => {
     if (drag) {
       hideGhost();
       clearIndicators();
-      // If dragging a track, we need to re-render to reset position
-      // (track position was being updated live, so we'd need to restore)
+      // Restore original position for element drags
+      if (drag.type === 'element') {
+        const el = state.elements.find(x => x.id === drag.elementId);
+        if (el) {
+          el.bayIndex = drag.origBayIndex;
+          el.pinRow = drag.origPinRow;
+          el.filename = drag.origFilename;
+        }
+      }
       drag = null;
       render();
     }
@@ -1072,25 +1171,56 @@ function updateCostPanel() {
 // ============================================================
 
 function initDefaultState() {
-  const startX = 100;
+  const startX = 200;
   const defaultTrack = 'etrack-200.svg';
+  const bayStep = TRACK_WIDTH + WIDE_BAY; // 947px per bay
 
-  state.tracks.push({
-    id: genId(), x: startX, filename: defaultTrack, lengthCm: 200,
-  });
-  state.tracks.push({
-    id: genId(), x: startX + TRACK_WIDTH + WIDE_BAY, filename: defaultTrack, lengthCm: 200,
-  });
-  state.tracks.push({
-    id: genId(), x: startX + (TRACK_WIDTH + WIDE_BAY) * 2, filename: defaultTrack, lengthCm: 200,
-  });
+  // 4 e-tracks forming 3 wide bays
+  for (let i = 0; i < 4; i++) {
+    state.tracks.push({
+      id: genId(), x: startX + bayStep * i, filename: defaultTrack, lengthCm: 200,
+    });
+  }
+
+  // Bay 0 (left): 2 shelves at top, desk at bottom
+  state.elements.push({ id: genId(), filename: 'shelf-wide-36.svg', bayIndex: 0, pinRow: 1 });
+  state.elements.push({ id: genId(), filename: 'shelf-wide-36.svg', bayIndex: 0, pinRow: 6 });
+  state.elements.push({ id: genId(), filename: 'desk-wide-shelf.svg', bayIndex: 0, pinRow: 18 });
+
+  // Bay 1 (middle): 2 shelves at top, 2-drawer cabinet at bottom
+  state.elements.push({ id: genId(), filename: 'shelf-wide-36.svg', bayIndex: 1, pinRow: 1 });
+  state.elements.push({ id: genId(), filename: 'shelf-wide-36.svg', bayIndex: 1, pinRow: 6 });
+  state.elements.push({ id: genId(), filename: 'cab-wide-2d.svg', bayIndex: 1, pinRow: 18 });
+
+  // Bay 2 (right): 1 shelf at top, 2 shallow shelves in middle, 1 shelf lower
+  state.elements.push({ id: genId(), filename: 'shelf-wide-36.svg', bayIndex: 2, pinRow: 1 });
+  state.elements.push({ id: genId(), filename: 'shelf-wide-22.svg', bayIndex: 2, pinRow: 6 });
+  state.elements.push({ id: genId(), filename: 'shelf-wide-22.svg', bayIndex: 2, pinRow: 10 });
+  state.elements.push({ id: genId(), filename: 'shelf-wide-drawer.svg', bayIndex: 2, pinRow: 18 });
 }
 
 // ============================================================
 // Init
 // ============================================================
 
-function init() {
+// SVG content cache for inline rendering
+const svgCache = {};
+
+async function preloadSVGs() {
+  const promises = ELEMENT_FILES.map(async (filename) => {
+    try {
+      const resp = await fetch('elements/' + filename);
+      const text = await resp.text();
+      svgCache[filename] = text;
+    } catch (e) {
+      // Fallback: will use <img> tag if fetch fails
+    }
+  });
+  await Promise.all(promises);
+}
+
+async function init() {
+  await preloadSVGs();
   populateLibrary();
   initDefaultState();
   setZoom(state.zoom);

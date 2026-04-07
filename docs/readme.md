@@ -4,7 +4,16 @@ A standalone web app for designing custom Vitsoe 606 modular shelving layouts.
 
 ## How to Run
 
-Open `index.html` in a web browser. No build step or server required.
+A local web server is required (SVGs are fetched and inlined for hover effects).
+
+```bash
+cd app
+python3 -m http.server
+```
+
+Then open [http://localhost:8000](http://localhost:8000) in your browser.
+
+Alternatively, deploy to GitHub Pages — it works out of the box.
 
 ## Architecture
 
