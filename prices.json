@@ -1,0 +1,39 @@
+{
+  "currency": "USD",
+  "components": {
+    "etrack": {
+      "57":  { "price": 75,  "label": "E-Track 57cm" },
+      "114": { "price": 100, "label": "E-Track 114cm" },
+      "171": { "price": 115, "label": "E-Track 171cm" },
+      "200": { "price": 125, "label": "E-Track 200cm" }
+    },
+    "shelf": {
+      "16":      { "narrow": 135, "wide": 160, "label": "Shelf 16cm" },
+      "22":      { "narrow": 145, "wide": 170, "label": "Shelf 22cm" },
+      "30":      { "narrow": 155, "wide": 180, "label": "Shelf 30cm" },
+      "36":      { "narrow": 165, "wide": 190, "label": "Shelf 36cm" },
+      "rail":    { "narrow": 290, "wide": 335, "label": "Shelf with Hanging Rail" },
+      "slope18": { "narrow": 205, "wide": 225, "label": "18° Sloping Shelf" },
+      "slope79": { "narrow": 230, "wide": 255, "label": "79° Sloping Shelf" },
+      "single":  { "narrow": 355, "wide": 405, "label": "Single Shelf" },
+      "double":  { "narrow": 475, "wide": 555, "label": "Double Shelf" },
+      "drawer":  { "narrow": 595, "wide": 695, "label": "Shelf with Drawer" }
+    },
+    "cab": {
+      "1d":      { "narrow": 1175, "wide": 1390, "label": "One Drawer Cabinet" },
+      "1d_lock": { "narrow": 1215, "wide": 1435, "label": "One Drawer with Lock" },
+      "2d":      { "narrow": 1350, "wide": 1575, "label": "Two Drawer Cabinet" },
+      "3d":      { "narrow": 1545, "wide": 1765, "label": "Three Drawer Cabinet" },
+      "uo":      { "narrow": 1350, "wide": 1575, "label": "Up and Over Door" },
+      "fdd":     { "narrow": 1445, "wide": 1665, "label": "Fold-Down Door with Lock" }
+    },
+    "table": {
+      "80":  { "narrow": 920,  "wide": 1015, "label": "Integrated Table 80cm" },
+      "120": { "narrow": 985,  "wide": 1095, "label": "Integrated Table 120cm" },
+      "160": { "narrow": 1375, "wide": 1495, "label": "Integrated Table 160cm" }
+    },
+    "desk": {
+      "shelf": { "narrow": 715, "wide": 775, "label": "Desk Shelf" }
+    }
+  }
+}

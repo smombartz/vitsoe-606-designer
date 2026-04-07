@@ -14,34 +14,88 @@ const SNAP_THRESHOLD   = 30;   // px — snap to standard bay width within this 
 
 // --- Element manifest ---
 const ELEMENT_FILES = [
-  'etrack-57.svg',
-  'etrack-114.svg',
-  'etrack-171.svg',
-  'etrack-200.svg',
-  'shelf-wide-22.svg',
-  'shelf-wide-36.svg',
-  'shelf-narrow-22.svg',
-  'shelf-narrow-36.svg',
-  'cab-wide-1d.svg',
-  'cab-wide-1d_lock.svg',
-  'cab-narrow-1d.svg',
-  'cab-narrow-1d_lock.svg',
+  // E-tracks
+  'etrack-57.svg', 'etrack-114.svg', 'etrack-171.svg', 'etrack-200.svg',
+  // Shelves — metal
+  'shelf-wide-16.svg', 'shelf-narrow-16.svg',
+  'shelf-wide-22.svg', 'shelf-narrow-22.svg',
+  'shelf-wide-30.svg', 'shelf-narrow-30.svg',
+  'shelf-wide-36.svg', 'shelf-narrow-36.svg',
+  'shelf-wide-rail.svg', 'shelf-narrow-rail.svg',
+  'shelf-wide-slope18.svg', 'shelf-narrow-slope18.svg',
+  'shelf-wide-slope79.svg', 'shelf-narrow-slope79.svg',
+  // Shelves — wooden/special
+  'shelf-wide-single.svg', 'shelf-narrow-single.svg',
+  'shelf-wide-double.svg', 'shelf-narrow-double.svg',
+  'shelf-wide-drawer.svg', 'shelf-narrow-drawer.svg',
+  // Cabinets
+  'cab-wide-1d.svg', 'cab-narrow-1d.svg',
+  'cab-wide-1d_lock.svg', 'cab-narrow-1d_lock.svg',
+  'cab-wide-2d.svg', 'cab-narrow-2d.svg',
+  'cab-wide-3d.svg', 'cab-narrow-3d.svg',
+  'cab-wide-uo.svg', 'cab-narrow-uo.svg',
+  'cab-wide-fdd.svg', 'cab-narrow-fdd.svg',
+  // Tables
+  'table-wide-80.svg', 'table-narrow-80.svg',
+  'table-wide-120.svg', 'table-narrow-120.svg',
+  'table-wide-160.svg', 'table-narrow-160.svg',
+  // Desk
+  'desk-wide-shelf.svg', 'desk-narrow-shelf.svg',
 ];
 
 // SVG metadata — dimensions and right-alignment offsets
 const ELEMENT_META = {
-  'etrack-57.svg':         { svgWidth: 35,   svgHeight: 570,  rightOffset: 0 },
-  'etrack-114.svg':        { svgWidth: 35,   svgHeight: 1140, rightOffset: 0 },
-  'etrack-171.svg':        { svgWidth: 35,   svgHeight: 1710, rightOffset: 0 },
-  'etrack-200.svg':        { svgWidth: 35,   svgHeight: 2000, rightOffset: 0 },
-  'shelf-wide-22.svg':     { svgWidth: 1027, svgHeight: 244,  rightOffset: 38 },
-  'shelf-wide-36.svg':     { svgWidth: 1086, svgHeight: 280,  rightOffset: 39 },
-  'shelf-narrow-22.svg':   { svgWidth: 787,  svgHeight: 258,  rightOffset: 40 },
-  'shelf-narrow-36.svg':   { svgWidth: 849,  svgHeight: 280,  rightOffset: 39 },
-  'cab-wide-1d.svg':       { svgWidth: 1086, svgHeight: 644,  rightOffset: 17 },
-  'cab-wide-1d_lock.svg':  { svgWidth: 1086, svgHeight: 644,  rightOffset: 17 },
-  'cab-narrow-1d.svg':     { svgWidth: 850,  svgHeight: 644,  rightOffset: 9 },
-  'cab-narrow-1d_lock.svg':{ svgWidth: 850,  svgHeight: 644,  rightOffset: 9 },
+  // E-tracks
+  'etrack-57.svg':            { svgWidth: 35,   svgHeight: 570,  rightOffset: 0 },
+  'etrack-114.svg':           { svgWidth: 35,   svgHeight: 1140, rightOffset: 0 },
+  'etrack-171.svg':           { svgWidth: 35,   svgHeight: 1710, rightOffset: 0 },
+  'etrack-200.svg':           { svgWidth: 35,   svgHeight: 2000, rightOffset: 0 },
+  // Shelves — original hand-tuned
+  'shelf-wide-22.svg':        { svgWidth: 1027, svgHeight: 244,  rightOffset: 38 },
+  'shelf-wide-36.svg':        { svgWidth: 1086, svgHeight: 280,  rightOffset: 39 },
+  'shelf-narrow-22.svg':      { svgWidth: 787,  svgHeight: 258,  rightOffset: 40 },
+  'shelf-narrow-36.svg':      { svgWidth: 849,  svgHeight: 280,  rightOffset: 39 },
+  // Shelves — auto-scaled from Vitsoe
+  'shelf-wide-16.svg':        { svgWidth: 1058, svgHeight: 257,  rightOffset: 40 },
+  'shelf-narrow-16.svg':      { svgWidth: 774,  svgHeight: 188,  rightOffset: 40 },
+  'shelf-wide-30.svg':        { svgWidth: 1128, svgHeight: 283,  rightOffset: 40 },
+  'shelf-narrow-30.svg':      { svgWidth: 825,  svgHeight: 207,  rightOffset: 40 },
+  'shelf-wide-rail.svg':      { svgWidth: 1158, svgHeight: 290,  rightOffset: 40 },
+  'shelf-narrow-rail.svg':    { svgWidth: 847,  svgHeight: 212,  rightOffset: 40 },
+  'shelf-wide-slope18.svg':   { svgWidth: 1160, svgHeight: 263,  rightOffset: 40 },
+  'shelf-narrow-slope18.svg': { svgWidth: 848,  svgHeight: 192,  rightOffset: 40 },
+  'shelf-wide-slope79.svg':   { svgWidth: 1090, svgHeight: 648,  rightOffset: 40 },
+  'shelf-narrow-slope79.svg': { svgWidth: 797,  svgHeight: 474,  rightOffset: 40 },
+  'shelf-wide-single.svg':    { svgWidth: 1158, svgHeight: 290,  rightOffset: 40 },
+  'shelf-narrow-single.svg':  { svgWidth: 847,  svgHeight: 212,  rightOffset: 40 },
+  'shelf-wide-double.svg':    { svgWidth: 1158, svgHeight: 291,  rightOffset: 40 },
+  'shelf-narrow-double.svg':  { svgWidth: 847,  svgHeight: 213,  rightOffset: 40 },
+  'shelf-wide-drawer.svg':    { svgWidth: 1158, svgHeight: 291,  rightOffset: 40 },
+  'shelf-narrow-drawer.svg':  { svgWidth: 847,  svgHeight: 213,  rightOffset: 40 },
+  // Cabinets — original hand-tuned
+  'cab-wide-1d.svg':          { svgWidth: 1086, svgHeight: 644,  rightOffset: 17 },
+  'cab-wide-1d_lock.svg':     { svgWidth: 1086, svgHeight: 644,  rightOffset: 17 },
+  'cab-narrow-1d.svg':        { svgWidth: 850,  svgHeight: 644,  rightOffset: 9 },
+  'cab-narrow-1d_lock.svg':   { svgWidth: 850,  svgHeight: 644,  rightOffset: 9 },
+  // Cabinets — auto-scaled from Vitsoe
+  'cab-wide-2d.svg':          { svgWidth: 1165, svgHeight: 706,  rightOffset: 17 },
+  'cab-narrow-2d.svg':        { svgWidth: 852,  svgHeight: 516,  rightOffset: 9 },
+  'cab-wide-3d.svg':          { svgWidth: 1165, svgHeight: 706,  rightOffset: 17 },
+  'cab-narrow-3d.svg':        { svgWidth: 852,  svgHeight: 516,  rightOffset: 9 },
+  'cab-wide-uo.svg':          { svgWidth: 1165, svgHeight: 706,  rightOffset: 17 },
+  'cab-narrow-uo.svg':        { svgWidth: 852,  svgHeight: 516,  rightOffset: 9 },
+  'cab-wide-fdd.svg':         { svgWidth: 1165, svgHeight: 706,  rightOffset: 17 },
+  'cab-narrow-fdd.svg':       { svgWidth: 852,  svgHeight: 516,  rightOffset: 9 },
+  // Tables — auto-scaled from Vitsoe
+  'table-wide-80.svg':        { svgWidth: 1171, svgHeight: 1205, rightOffset: 20 },
+  'table-narrow-80.svg':      { svgWidth: 856,  svgHeight: 881,  rightOffset: 20 },
+  'table-wide-120.svg':       { svgWidth: 1340, svgHeight: 1237, rightOffset: 20 },
+  'table-narrow-120.svg':     { svgWidth: 980,  svgHeight: 904,  rightOffset: 20 },
+  'table-wide-160.svg':       { svgWidth: 1443, svgHeight: 1294, rightOffset: 20 },
+  'table-narrow-160.svg':     { svgWidth: 1056, svgHeight: 947,  rightOffset: 20 },
+  // Desk — auto-scaled from Vitsoe
+  'desk-wide-shelf.svg':      { svgWidth: 1254, svgHeight: 291,  rightOffset: 40 },
+  'desk-narrow-shelf.svg':    { svgWidth: 917,  svgHeight: 213,  rightOffset: 40 },
 };
 
 // --- Filename parser ---
@@ -167,6 +221,9 @@ function render() {
   // render last so they appear in front (isometric: higher = closer to viewer)
   const sorted = [...state.elements].sort((a, b) => b.pinRow - a.pinRow);
   sorted.forEach((el, i) => renderElement(el, i));
+
+  // Update cost calculator
+  updateCostPanel();
 }
 
 function renderTrack(track) {
@@ -823,8 +880,13 @@ function populateLibrary() {
     groups[item.category].push(item);
   });
 
-  const categoryOrder = ['etrack', 'shelf', 'cab'];
-  const categoryLabels = { etrack: 'E-Tracks', shelf: 'Shelves', cab: 'Cabinets' };
+  const categoryOrder = ['etrack', 'shelf', 'cab', 'table_desk'];
+  const categoryLabels = { etrack: 'E-Tracks', shelf: 'Shelves', cab: 'Cabinets', table_desk: 'Tables & Desks' };
+
+  // Merge table and desk into one group
+  groups['table_desk'] = [...(groups['table'] || []), ...(groups['desk'] || [])];
+  delete groups['table'];
+  delete groups['desk'];
 
   categoryOrder.forEach(cat => {
     const items = groups[cat];
@@ -834,8 +896,12 @@ function populateLibrary() {
     section.className = 'library-category';
 
     const heading = document.createElement('h3');
-    heading.textContent = categoryLabels[cat] || cat;
+    heading.className = 'collapsible-header';
+    heading.innerHTML = '<span class="collapse-arrow">▾</span> ' + (categoryLabels[cat] || cat);
     section.appendChild(heading);
+
+    const content = document.createElement('div');
+    content.className = 'collapsible-content';
 
     items.forEach(item => {
       const div = document.createElement('div');
@@ -851,7 +917,20 @@ function populateLibrary() {
       label.textContent = formatLabel(item);
       div.appendChild(label);
 
-      section.appendChild(div);
+      const price = document.createElement('span');
+      price.className = 'library-price';
+      price.textContent = '$' + getPrice(item.filename).toLocaleString();
+      div.appendChild(price);
+
+      content.appendChild(div);
+    });
+
+    section.appendChild(content);
+
+    // Toggle collapse on heading click
+    heading.addEventListener('click', () => {
+      const isCollapsed = content.classList.toggle('collapsed');
+      heading.querySelector('.collapse-arrow').textContent = isCollapsed ? '▸' : '▾';
     });
 
     libraryItems.appendChild(section);
@@ -860,10 +939,128 @@ function populateLibrary() {
 
 function formatLabel(item) {
   if (item.category === 'etrack') return item.option + 'cm';
-  const categoryLabelsShort = { shelf: 'Shelf', cab: 'Cabinet' };
+  const categoryLabelsShort = { shelf: 'Shelf', cab: 'Cabinet', table: 'Table', desk: 'Desk' };
   const catLabel = categoryLabelsShort[item.category] || item.category;
   const optionLabel = item.option.replace(/_/g, ' ');
-  return catLabel + ' — ' + optionLabel;
+  return catLabel + ': ' + optionLabel;
+}
+
+// ============================================================
+// Cost Calculator
+// ============================================================
+
+// Prices inlined to avoid fetch() issues with file:// protocol
+const priceData = {
+  currency: 'USD',
+  components: {
+    etrack: {
+      '57':  { price: 75,  label: 'E-Track 57cm' },
+      '114': { price: 100, label: 'E-Track 114cm' },
+      '171': { price: 115, label: 'E-Track 171cm' },
+      '200': { price: 125, label: 'E-Track 200cm' },
+    },
+    shelf: {
+      '16':      { narrow: 135, wide: 160, label: 'Shelf 16cm' },
+      '22':      { narrow: 145, wide: 170, label: 'Shelf 22cm' },
+      '30':      { narrow: 155, wide: 180, label: 'Shelf 30cm' },
+      '36':      { narrow: 165, wide: 190, label: 'Shelf 36cm' },
+      'rail':    { narrow: 290, wide: 335, label: 'Shelf w/ Hanging Rail' },
+      'slope18': { narrow: 205, wide: 225, label: '18° Sloping Shelf' },
+      'slope79': { narrow: 230, wide: 255, label: '79° Sloping Shelf' },
+      'single':  { narrow: 355, wide: 405, label: 'Single Shelf' },
+      'double':  { narrow: 475, wide: 555, label: 'Double Shelf' },
+      'drawer':  { narrow: 595, wide: 695, label: 'Shelf w/ Drawer' },
+    },
+    cab: {
+      '1d':      { narrow: 1175, wide: 1390, label: 'One Drawer Cabinet' },
+      '1d_lock': { narrow: 1215, wide: 1435, label: 'One Drawer w/ Lock' },
+      '2d':      { narrow: 1350, wide: 1575, label: 'Two Drawer Cabinet' },
+      '3d':      { narrow: 1545, wide: 1765, label: 'Three Drawer Cabinet' },
+      'uo':      { narrow: 1350, wide: 1575, label: 'Up and Over Door' },
+      'fdd':     { narrow: 1445, wide: 1665, label: 'Fold-Down Door w/ Lock' },
+    },
+    table: {
+      '80':  { narrow: 920,  wide: 1015, label: 'Table 80cm' },
+      '120': { narrow: 985,  wide: 1095, label: 'Table 120cm' },
+      '160': { narrow: 1375, wide: 1495, label: 'Table 160cm' },
+    },
+    desk: {
+      'shelf': { narrow: 715, wide: 775, label: 'Desk Shelf' },
+    },
+  },
+};
+
+function getPrice(filename) {
+  if (!priceData) return 0;
+  const parsed = parseElementFilename(filename);
+  const catPrices = priceData.components[parsed.category];
+  if (!catPrices) return 0;
+  const optPrices = catPrices[parsed.option];
+  if (!optPrices) return 0;
+
+  // E-tracks have a flat price; elements have narrow/wide prices
+  if (optPrices.price !== undefined) return optPrices.price;
+  return optPrices[parsed.width] || 0;
+}
+
+function getPriceLabel(filename) {
+  if (!priceData) return filename;
+  const parsed = parseElementFilename(filename);
+  const catPrices = priceData.components[parsed.category];
+  if (!catPrices) return formatLabel(parsed);
+  const optPrices = catPrices[parsed.option];
+  if (!optPrices) return formatLabel(parsed);
+  return optPrices.label || formatLabel(parsed);
+}
+
+const costItemsEl = document.getElementById('cost-items');
+const costTotalEl = document.getElementById('cost-total-amount');
+
+function updateCostPanel() {
+  if (!costItemsEl) return;
+
+  // Count items by filename
+  const counts = {};
+  state.tracks.forEach(t => {
+    counts[t.filename] = (counts[t.filename] || 0) + 1;
+  });
+  state.elements.forEach(el => {
+    counts[el.filename] = (counts[el.filename] || 0) + 1;
+  });
+
+  costItemsEl.innerHTML = '';
+
+  if (Object.keys(counts).length === 0) {
+    costItemsEl.innerHTML = '<div class="cost-empty">Add elements to see costs</div>';
+    costTotalEl.textContent = '$0';
+    return;
+  }
+
+  let total = 0;
+  // Sort: etracks first, then by label
+  const entries = Object.entries(counts).sort((a, b) => {
+    const pa = parseElementFilename(a[0]);
+    const pb = parseElementFilename(b[0]);
+    if (pa.category === 'etrack' && pb.category !== 'etrack') return -1;
+    if (pa.category !== 'etrack' && pb.category === 'etrack') return 1;
+    return getPriceLabel(a[0]).localeCompare(getPriceLabel(b[0]));
+  });
+
+  entries.forEach(([filename, count]) => {
+    const unitPrice = getPrice(filename);
+    const lineTotal = unitPrice * count;
+    total += lineTotal;
+
+    const div = document.createElement('div');
+    div.className = 'cost-line';
+    div.innerHTML =
+      '<span class="cost-label">' + count + '× ' + getPriceLabel(filename) + '</span>' +
+      '<span class="cost-unit">$' + unitPrice.toLocaleString() + '</span>' +
+      '<span class="cost-price">$' + lineTotal.toLocaleString() + '</span>';
+    costItemsEl.appendChild(div);
+  });
+
+  costTotalEl.textContent = '$' + total.toLocaleString();
 }
 
 // ============================================================
@@ -894,6 +1091,16 @@ function init() {
   initDefaultState();
   setZoom(state.zoom);
   render();
+
+  // Cost panel collapse
+  const costHeader = document.getElementById('cost-header');
+  const costBody = document.getElementById('cost-body');
+  if (costHeader && costBody) {
+    costHeader.addEventListener('click', () => {
+      const isCollapsed = costBody.classList.toggle('collapsed');
+      costHeader.querySelector('.collapse-arrow').textContent = isCollapsed ? '▸' : '▾';
+    });
+  }
 }
 
 init();

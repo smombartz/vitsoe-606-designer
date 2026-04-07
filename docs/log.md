@@ -1,5 +1,30 @@
 # Change Log
 
+## 2026-04-07 - Added full component library, price list, and cost calculator
+
+**What Changed:**
+- Downloaded 17 isometric SVGs from Vitsoe 606 components page and created wide+narrow variants (34 new SVG files)
+- New elements: shelves (16cm, 30cm, hanging rail, 18° slope, 79° slope, single, double, drawer), cabinets (2d, 3d, up-over, fold-down door), tables (80cm, 120cm, 160cm), desk shelf
+- SVGs auto-scaled from Vitsoe originals (283×283 viewBox) to our 1cm=10px system with content bbox cropping
+- Created `prices.json` with all component prices in USD from vitsoe.com/us/606/components
+- Added cost calculator panel in library sidebar — updates live as elements are added/removed
+- Shows per-item line items with quantities and running total
+- Updated ELEMENT_FILES (44 total), ELEMENT_META, and LIBRARY_CATALOG
+- Added table and desk categories to library
+
+**Why:**
+- Expand element library to cover all Vitsoe 606 rail-mounted components
+- Enable users to estimate costs as they design
+
+**Files Modified:**
+- `elements/` — 34 new SVG files
+- `prices.json` — new file, USD price list
+- `main.js` — expanded manifest/meta, cost calculator logic, new categories
+- `style.css` — cost panel styles
+- `index.html` — cost panel container
+
+---
+
 ## 2026-04-07 - Simplified library and enforced standard bay widths
 
 **What Changed:**
