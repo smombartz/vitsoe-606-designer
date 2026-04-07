@@ -217,9 +217,13 @@ function render() {
   // Render tracks
   state.tracks.forEach(renderTrack);
 
-  // Render elements sorted by pinRow descending — items higher up (lower pinRow)
-  // render last so they appear in front (isometric: higher = closer to viewer)
-  const sorted = [...state.elements].sort((a, b) => b.pinRow - a.pinRow);
+  // Sort for isometric z-order: elements rendered later appear in front.
+  // 1. Left bays render first (behind), right bays render last (in front)
+  // 2. Within same bay, bottom rows render first (behind), top rows last (in front)
+  const sorted = [...state.elements].sort((a, b) => {
+    if (a.bayIndex !== b.bayIndex) return a.bayIndex - b.bayIndex;
+    return b.pinRow - a.pinRow;
+  });
   sorted.forEach((el, i) => renderElement(el, i));
 
   // Update cost calculator
