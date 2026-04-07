@@ -64,8 +64,10 @@ body {
 
 .collapse-arrow {
   display: inline-block;
-  width: 12px;
-  font-size: 10px;
+  width: 16px;
+  font-size: 14px;
+  font-weight: 300;
+  transition: transform 0.2s ease;
 }
 
 .collapsible-content {

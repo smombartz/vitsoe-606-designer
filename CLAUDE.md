@@ -200,3 +200,37 @@ Always preserve existing log entries. New entries go at the **top** (most recent
 
 ### Active Features
 - None yet — project is pre-development. SVG assets are ready.
+
+---
+
+## Design Context
+
+### Users
+Vitsoe customers planning their own 606 modular shelving system before purchasing. Design-conscious consumers who appreciate Vitsoe's aesthetic and Dieter Rams' philosophy. The tool should feel like an extension of the Vitsoe experience.
+
+### Brand Personality
+**Honest, unobtrusive, purposeful.** Inspired by Dieter Rams' 10 principles — particularly "as little design as possible," "honest," and "unobtrusive."
+
+### Aesthetic Direction
+- **Visual tone**: Ultra-functional minimalism with warmth. Quiet confidence, not cold or sterile.
+- **Theme**: Light only.
+- **Primary reference**: vitsoe.com — restrained, black-and-white dominant, generous whitespace, functional hierarchy
+- **Other references**: Dieter Rams' design principles, Braun product design, the 606 system itself
+- **Anti-references**: Generic SaaS dashboards, purple-gradient AI aesthetic, startup-flavored UI.
+
+### Design Principles
+1. **Less but better** — Every UI element must earn its place.
+2. **Honest materials** — Real information, real proportions. No fake depth or gratuitous effects.
+3. **The tool disappears** — The interface never competes with the user's configuration.
+4. **Precision over flair** — Meticulous alignment, spacing, and typography.
+5. **Accessible by default** — WCAG AA compliance (4.5:1 contrast, keyboard navigable, respects reduced motion).
+
+### Typography (from vitsoe.com)
+- Brand typeface: Univers (Frutiger, 1969). Free web equivalent: DM Sans or Source Sans 3
+- Bold 700 for headings, regular for body. Sizes: 14px (secondary) to 32px (headings)
+- Fixed `rem` sizing for app UI. `tabular-nums` for pricing/numeric data
+- Restrained uppercase/letter-spacing for section labels only
+
+### Color (from vitsoe.com)
+- `#000` black (text), `#fff` white (backgrounds), `#f0f0f0` (panels), `#c2c2c2` (borders), `#666` (secondary text), `#0073b1` (links/accents)
+- Spacing: 8px base unit. Common: 8, 16, 24, 32, 40, 48, 64px

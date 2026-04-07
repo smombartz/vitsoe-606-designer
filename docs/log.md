@@ -1,5 +1,22 @@
 # Change Log
 
+## 2026-04-07 - Improved collapse arrows: bigger size, arrow characters
+
+**What Changed:**
+- Increased `.collapse-arrow` from 10px/12px to 14px/16px for better visibility
+- Replaced triangle characters (▾/▸) with arrow characters (↓/→)
+- Added smooth transition on the arrow
+
+**Why:**
+- Collapse arrows were too small and hard to see
+- Arrows (↓/→) are clearer affordances than triangles for expand/collapse
+
+**Files Modified:**
+- `style.css` — updated `.collapse-arrow` size and added transition
+- `main.js` — swapped ▾→↓ and ▸→→ in all collapsible header toggles
+
+---
+
 ## 2026-04-07 - Added full component library, price list, and cost calculator
 
 **What Changed:**

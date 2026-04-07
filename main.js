@@ -1000,7 +1000,7 @@ function populateLibrary() {
 
     const heading = document.createElement('h3');
     heading.className = 'collapsible-header';
-    heading.innerHTML = '<span class="collapse-arrow">▾</span> ' + (categoryLabels[cat] || cat);
+    heading.innerHTML = '<span class="collapse-arrow">↓</span> ' + (categoryLabels[cat] || cat);
     section.appendChild(heading);
 
     const content = document.createElement('div');
@@ -1033,7 +1033,7 @@ function populateLibrary() {
     // Toggle collapse on heading click
     heading.addEventListener('click', () => {
       const isCollapsed = content.classList.toggle('collapsed');
-      heading.querySelector('.collapse-arrow').textContent = isCollapsed ? '▸' : '▾';
+      heading.querySelector('.collapse-arrow').textContent = isCollapsed ? '→' : '↓';
     });
 
     libraryItems.appendChild(section);
@@ -1232,7 +1232,7 @@ async function init() {
   if (costHeader && costBody) {
     costHeader.addEventListener('click', () => {
       const isCollapsed = costBody.classList.toggle('collapsed');
-      costHeader.querySelector('.collapse-arrow').textContent = isCollapsed ? '▸' : '▾';
+      costHeader.querySelector('.collapse-arrow').textContent = isCollapsed ? '→' : '↓';
     });
   }
 }
