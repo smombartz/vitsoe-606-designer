@@ -254,10 +254,25 @@ body {
 }
 
 .element.selected {
-  outline: 2px solid #0078ff;
-  outline-offset: 2px;
-  border-radius: 2px;
   color: #cc0000;
+}
+
+/* ── Element Dimensions (hover) ── */
+.element-dimensions {
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform-origin: top center;
+  font-size: 16px;
+  color: #bbb;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.element:hover .element-dimensions {
+  opacity: 1;
 }
 
 /* ── Drop indicators ── */

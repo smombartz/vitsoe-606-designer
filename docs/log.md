@@ -1,5 +1,69 @@
 # Change Log
 
+## 2026-04-07 - Show element dimensions on hover
+
+**What Changed:**
+- Added `elementDimensions` data with L/D/H measurements for all element types
+- `renderElement` now appends a `.element-dimensions` label to each element
+- Label shows "L: 91.2 cm   D: 22 cm   H: 2 cm" in light grey beneath the element, visible only on hover
+
+**Why:**
+- Users need to see physical measurements when planning their configuration
+
+**Files Modified:**
+- `main.js` — added dimensions data, `getDimensions()` helper, and label in `renderElement`
+- `style.css` — added `.element-dimensions` styles (positioned below, light grey, fade in on hover)
+
+---
+
+## 2026-04-07 - Fixed shelf-22 and shelf-36 SVG widths
+
+**What Changed:**
+- Extended shelf SVGs to correct widths by shifting right-side geometry (bracket, pin holes, shelf surface, bottom lip) while keeping left side unchanged
+- Corrected approach: bracket-to-bracket span must be constant (wide=947px, narrow=693px) — initial attempt wrongly interpolated total SVG width
+- Final widths: wide-22=1063, wide-36=1130, narrow-22=815, narrow-36=877
+- Updated ELEMENT_META svgWidth values in main.js
+
+**Why:**
+- 22cm and 36cm shelves were drawn too narrow and didn't properly span between e-tracks
+
+**Files Modified:**
+- `elements/shelf-wide-22.svg`
+- `elements/shelf-wide-36.svg`
+- `elements/shelf-narrow-22.svg`
+- `elements/shelf-narrow-36.svg`
+- `main.js` — updated svgWidth in ELEMENT_META
+
+---
+
+## 2026-04-07 - Fixed shelf-22 and shelf-36 right-alignment offset
+
+**What Changed:**
+- Set `rightOffset` to 40 for shelf-wide-22, shelf-wide-36, and shelf-narrow-36 (were 38-39)
+
+**Why:**
+- These shelves were misaligned to the e-track by 1-2px compared to all other shelves which use rightOffset 40
+
+**Files Modified:**
+- `main.js` — updated ELEMENT_META rightOffset values
+
+---
+
+## 2026-04-07 - E-track deletion via context menu
+
+**What Changed:**
+- Right-clicking an e-track now shows a context menu with "Remove E-Track"
+- Removing a track also removes all elements in the bays that touched it
+- Bay indices are re-indexed after removal via existing `reindexElements()`
+
+**Why:**
+- Users had no way to delete e-tracks once placed
+
+**Files Modified:**
+- `main.js` — added track right-click handler and `showTrackContextMenu()` function
+
+---
+
 ## 2026-04-07 - Improved collapse arrows: bigger size, arrow characters
 
 **What Changed:**

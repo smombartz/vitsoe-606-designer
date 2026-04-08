@@ -51,51 +51,51 @@ const ELEMENT_META = {
   'etrack-171.svg':           { svgWidth: 35,   svgHeight: 1710, rightOffset: 0 },
   'etrack-200.svg':           { svgWidth: 35,   svgHeight: 2000, rightOffset: 0 },
   // Shelves — original hand-tuned
-  'shelf-wide-22.svg':        { svgWidth: 1027, svgHeight: 244,  rightOffset: 38 },
-  'shelf-wide-36.svg':        { svgWidth: 1086, svgHeight: 280,  rightOffset: 39 },
-  'shelf-narrow-22.svg':      { svgWidth: 787,  svgHeight: 258,  rightOffset: 40 },
-  'shelf-narrow-36.svg':      { svgWidth: 849,  svgHeight: 280,  rightOffset: 39 },
+  'shelf-wide-22.svg':        { svgWidth: 1063, svgHeight: 244,  rightOffset: 32 },
+  'shelf-wide-36.svg':        { svgWidth: 1130, svgHeight: 280,  rightOffset: 32 },
+  'shelf-narrow-22.svg':      { svgWidth: 815,  svgHeight: 258,  rightOffset: 32 },
+  'shelf-narrow-36.svg':      { svgWidth: 877,  svgHeight: 280,  rightOffset: 32 },
   // Shelves — auto-scaled from Vitsoe
-  'shelf-wide-16.svg':        { svgWidth: 1058, svgHeight: 257,  rightOffset: 40 },
-  'shelf-narrow-16.svg':      { svgWidth: 774,  svgHeight: 188,  rightOffset: 40 },
-  'shelf-wide-30.svg':        { svgWidth: 1128, svgHeight: 283,  rightOffset: 40 },
-  'shelf-narrow-30.svg':      { svgWidth: 825,  svgHeight: 207,  rightOffset: 40 },
-  'shelf-wide-rail.svg':      { svgWidth: 1158, svgHeight: 290,  rightOffset: 40 },
-  'shelf-narrow-rail.svg':    { svgWidth: 847,  svgHeight: 212,  rightOffset: 40 },
-  'shelf-wide-slope18.svg':   { svgWidth: 1160, svgHeight: 263,  rightOffset: 40 },
-  'shelf-narrow-slope18.svg': { svgWidth: 848,  svgHeight: 192,  rightOffset: 40 },
-  'shelf-wide-slope79.svg':   { svgWidth: 1090, svgHeight: 648,  rightOffset: 40 },
-  'shelf-narrow-slope79.svg': { svgWidth: 797,  svgHeight: 474,  rightOffset: 40 },
-  'shelf-wide-single.svg':    { svgWidth: 1158, svgHeight: 290,  rightOffset: 40 },
-  'shelf-narrow-single.svg':  { svgWidth: 847,  svgHeight: 212,  rightOffset: 40 },
-  'shelf-wide-double.svg':    { svgWidth: 1158, svgHeight: 291,  rightOffset: 40 },
-  'shelf-narrow-double.svg':  { svgWidth: 847,  svgHeight: 213,  rightOffset: 40 },
-  'shelf-wide-drawer.svg':    { svgWidth: 1158, svgHeight: 291,  rightOffset: 40 },
-  'shelf-narrow-drawer.svg':  { svgWidth: 847,  svgHeight: 213,  rightOffset: 40 },
+  'shelf-wide-16.svg':        { svgWidth: 1058, svgHeight: 257,  rightOffset: 32 },
+  'shelf-narrow-16.svg':      { svgWidth: 774,  svgHeight: 188,  rightOffset: 32 },
+  'shelf-wide-30.svg':        { svgWidth: 1128, svgHeight: 283,  rightOffset: 32 },
+  'shelf-narrow-30.svg':      { svgWidth: 825,  svgHeight: 207,  rightOffset: 32 },
+  'shelf-wide-rail.svg':      { svgWidth: 1158, svgHeight: 290,  rightOffset: 32 },
+  'shelf-narrow-rail.svg':    { svgWidth: 847,  svgHeight: 212,  rightOffset: 32 },
+  'shelf-wide-slope18.svg':   { svgWidth: 1160, svgHeight: 263,  rightOffset: 32 },
+  'shelf-narrow-slope18.svg': { svgWidth: 848,  svgHeight: 192,  rightOffset: 32 },
+  'shelf-wide-slope79.svg':   { svgWidth: 1090, svgHeight: 648,  rightOffset: 32 },
+  'shelf-narrow-slope79.svg': { svgWidth: 797,  svgHeight: 474,  rightOffset: 32 },
+  'shelf-wide-single.svg':    { svgWidth: 1158, svgHeight: 290,  rightOffset: 32 },
+  'shelf-narrow-single.svg':  { svgWidth: 847,  svgHeight: 212,  rightOffset: 32 },
+  'shelf-wide-double.svg':    { svgWidth: 1158, svgHeight: 291,  rightOffset: 32 },
+  'shelf-narrow-double.svg':  { svgWidth: 847,  svgHeight: 213,  rightOffset: 32 },
+  'shelf-wide-drawer.svg':    { svgWidth: 1158, svgHeight: 291,  rightOffset: 32 },
+  'shelf-narrow-drawer.svg':  { svgWidth: 847,  svgHeight: 213,  rightOffset: 32 },
   // Cabinets — original hand-tuned
-  'cab-wide-1d.svg':          { svgWidth: 1086, svgHeight: 644,  rightOffset: 17 },
-  'cab-wide-1d_lock.svg':     { svgWidth: 1086, svgHeight: 644,  rightOffset: 17 },
-  'cab-narrow-1d.svg':        { svgWidth: 850,  svgHeight: 644,  rightOffset: 9 },
-  'cab-narrow-1d_lock.svg':   { svgWidth: 850,  svgHeight: 644,  rightOffset: 9 },
+  'cab-wide-1d.svg':          { svgWidth: 1086, svgHeight: 644,  rightOffset: 9 },
+  'cab-wide-1d_lock.svg':     { svgWidth: 1086, svgHeight: 644,  rightOffset: 9 },
+  'cab-narrow-1d.svg':        { svgWidth: 850,  svgHeight: 644,  rightOffset: 1 },
+  'cab-narrow-1d_lock.svg':   { svgWidth: 850,  svgHeight: 644,  rightOffset: 1 },
   // Cabinets — auto-scaled from Vitsoe
-  'cab-wide-2d.svg':          { svgWidth: 1165, svgHeight: 706,  rightOffset: 17 },
-  'cab-narrow-2d.svg':        { svgWidth: 852,  svgHeight: 516,  rightOffset: 9 },
-  'cab-wide-3d.svg':          { svgWidth: 1165, svgHeight: 706,  rightOffset: 17 },
-  'cab-narrow-3d.svg':        { svgWidth: 852,  svgHeight: 516,  rightOffset: 9 },
-  'cab-wide-uo.svg':          { svgWidth: 1165, svgHeight: 706,  rightOffset: 17 },
-  'cab-narrow-uo.svg':        { svgWidth: 852,  svgHeight: 516,  rightOffset: 9 },
-  'cab-wide-fdd.svg':         { svgWidth: 1165, svgHeight: 706,  rightOffset: 17 },
-  'cab-narrow-fdd.svg':       { svgWidth: 852,  svgHeight: 516,  rightOffset: 9 },
+  'cab-wide-2d.svg':          { svgWidth: 1165, svgHeight: 706,  rightOffset: 9 },
+  'cab-narrow-2d.svg':        { svgWidth: 852,  svgHeight: 516,  rightOffset: 1 },
+  'cab-wide-3d.svg':          { svgWidth: 1165, svgHeight: 706,  rightOffset: 9 },
+  'cab-narrow-3d.svg':        { svgWidth: 852,  svgHeight: 516,  rightOffset: 1 },
+  'cab-wide-uo.svg':          { svgWidth: 1165, svgHeight: 706,  rightOffset: 9 },
+  'cab-narrow-uo.svg':        { svgWidth: 852,  svgHeight: 516,  rightOffset: 1 },
+  'cab-wide-fdd.svg':         { svgWidth: 1165, svgHeight: 706,  rightOffset: 9 },
+  'cab-narrow-fdd.svg':       { svgWidth: 852,  svgHeight: 516,  rightOffset: 1 },
   // Tables — auto-scaled from Vitsoe
-  'table-wide-80.svg':        { svgWidth: 1171, svgHeight: 1205, rightOffset: 20 },
-  'table-narrow-80.svg':      { svgWidth: 856,  svgHeight: 881,  rightOffset: 20 },
-  'table-wide-120.svg':       { svgWidth: 1340, svgHeight: 1237, rightOffset: 20 },
-  'table-narrow-120.svg':     { svgWidth: 980,  svgHeight: 904,  rightOffset: 20 },
-  'table-wide-160.svg':       { svgWidth: 1443, svgHeight: 1294, rightOffset: 20 },
-  'table-narrow-160.svg':     { svgWidth: 1056, svgHeight: 947,  rightOffset: 20 },
+  'table-wide-80.svg':        { svgWidth: 1171, svgHeight: 1205, rightOffset: 12 },
+  'table-narrow-80.svg':      { svgWidth: 856,  svgHeight: 881,  rightOffset: 12 },
+  'table-wide-120.svg':       { svgWidth: 1340, svgHeight: 1237, rightOffset: 12 },
+  'table-narrow-120.svg':     { svgWidth: 980,  svgHeight: 904,  rightOffset: 12 },
+  'table-wide-160.svg':       { svgWidth: 1443, svgHeight: 1294, rightOffset: 12 },
+  'table-narrow-160.svg':     { svgWidth: 1056, svgHeight: 947,  rightOffset: 12 },
   // Desk — auto-scaled from Vitsoe
-  'desk-wide-shelf.svg':      { svgWidth: 1254, svgHeight: 291,  rightOffset: 40 },
-  'desk-narrow-shelf.svg':    { svgWidth: 917,  svgHeight: 213,  rightOffset: 40 },
+  'desk-wide-shelf.svg':      { svgWidth: 1254, svgHeight: 291,  rightOffset: 32 },
+  'desk-narrow-shelf.svg':    { svgWidth: 917,  svgHeight: 213,  rightOffset: 32 },
 };
 
 // --- Filename parser ---
@@ -353,6 +353,17 @@ function renderElement(el, stackIndex) {
     img.src = 'elements/' + el.filename;
     div.appendChild(img);
   }
+  // Measurement label (shown on hover, counter-scaled against zoom)
+  const dims = getDimensions(el.filename);
+  if (dims) {
+    const measureLabel = document.createElement('div');
+    measureLabel.className = 'element-dimensions';
+    measureLabel.textContent = 'L: ' + dims.L + ' cm   D: ' + dims.D + ' cm   H: ' + dims.H + ' cm';
+    const invScale = 1 / state.zoom;
+    measureLabel.style.transform = 'translateX(-50%) scale(' + invScale + ')';
+    div.appendChild(measureLabel);
+  }
+
   canvas.appendChild(div);
 }
 
@@ -882,19 +893,28 @@ document.addEventListener('keydown', (e) => {
 canvas.addEventListener('contextmenu', (e) => {
   e.preventDefault();
 
+  // Right-click on element
   const elDiv = e.target.closest('.element');
-  if (!elDiv) {
-    dismissContextMenu();
+  if (elDiv) {
+    const id = parseInt(elDiv.dataset.elementId);
+    const el = state.elements.find(x => x.id === id);
+    if (!el) return;
+
+    state.selectedId = id;
+    render();
+    showContextMenu(e.clientX, e.clientY, el);
     return;
   }
 
-  const id = parseInt(elDiv.dataset.elementId);
-  const el = state.elements.find(x => x.id === id);
-  if (!el) return;
+  // Right-click on track
+  const trackDiv = e.target.closest('.track');
+  if (trackDiv) {
+    const id = parseInt(trackDiv.dataset.trackId);
+    showTrackContextMenu(e.clientX, e.clientY, id);
+    return;
+  }
 
-  state.selectedId = id;
-  render();
-  showContextMenu(e.clientX, e.clientY, el);
+  dismissContextMenu();
 });
 
 function showContextMenu(x, y, el) {
@@ -949,6 +969,48 @@ function showContextMenu(x, y, el) {
   contextMenuEl.classList.remove('hidden');
 
   // Adjust if off-screen
+  requestAnimationFrame(() => {
+    const rect = contextMenuEl.getBoundingClientRect();
+    if (rect.right > window.innerWidth) {
+      contextMenuEl.style.left = (x - rect.width) + 'px';
+    }
+    if (rect.bottom > window.innerHeight) {
+      contextMenuEl.style.top = (y - rect.height) + 'px';
+    }
+  });
+}
+
+function showTrackContextMenu(x, y, trackId) {
+  contextMenuEl.innerHTML = '';
+
+  const removeItem = document.createElement('div');
+  removeItem.className = 'menu-item';
+  removeItem.textContent = 'Remove E-Track';
+  removeItem.addEventListener('click', () => {
+    const trackIdx = state.tracks.findIndex(t => t.id === trackId);
+    if (trackIdx === -1) return;
+
+    // Remove elements in bays that touch this track
+    state.elements = state.elements.filter(el => {
+      const leftBay = trackIdx - 1;
+      const rightBay = trackIdx;
+      return el.bayIndex !== leftBay && el.bayIndex !== rightBay;
+    });
+
+    state.tracks.splice(trackIdx, 1);
+    reindexElements();
+    state.selectedId = null;
+    render();
+    dismissContextMenu();
+    updateCostPanel();
+  });
+  contextMenuEl.appendChild(removeItem);
+
+  // Position
+  contextMenuEl.style.left = x + 'px';
+  contextMenuEl.style.top = y + 'px';
+  contextMenuEl.classList.remove('hidden');
+
   requestAnimationFrame(() => {
     const rect = contextMenuEl.getBoundingClientRect();
     if (rect.right > window.innerWidth) {
@@ -1092,6 +1154,50 @@ const priceData = {
     },
   },
 };
+
+// Element dimensions in cm: L (length), D (depth), H (height)
+// Length depends on bay width (wide=91.2, narrow=66.7)
+const elementDimensions = {
+  shelf: {
+    '16':      { D: 16, H: 2 },
+    '22':      { D: 22, H: 2 },
+    '30':      { D: 30, H: 2 },
+    '36':      { D: 36, H: 2 },
+    'rail':    { D: 30, H: 17 },
+    'slope18': { D: 30, H: 2 },
+    'slope79': { D: 22, H: 2 },
+    'single':  { D: 30, H: 17 },
+    'double':  { D: 30, H: 17 },
+    'drawer':  { D: 30, H: 17 },
+  },
+  cab: {
+    '1d':      { D: 36, H: 55 },
+    '1d_lock': { D: 36, H: 55 },
+    '2d':      { D: 43, H: 55 },
+    '3d':      { D: 43, H: 55 },
+    'uo':      { D: 43, H: 55 },
+    'fdd':     { D: 43, H: 55 },
+  },
+  table: {
+    '80':  { D: 80,  H: 2 },
+    '120': { D: 120, H: 2 },
+    '160': { D: 160, H: 2 },
+  },
+  desk: {
+    'shelf': { D: 30, H: 17 },
+  },
+};
+
+function getDimensions(filename) {
+  const parsed = parseElementFilename(filename);
+  if (parsed.category === 'etrack') return null;
+  const catDims = elementDimensions[parsed.category];
+  if (!catDims) return null;
+  const dims = catDims[parsed.option];
+  if (!dims) return null;
+  const L = parsed.width === 'wide' ? 91.2 : 66.7;
+  return { L, D: dims.D, H: dims.H };
+}
 
 function getPrice(filename) {
   if (!priceData) return 0;
