@@ -584,6 +584,11 @@ function hideGhost() {
 let drag = null;
 // drag = { type: 'library'|'element'|'track', ... }
 
+function endDrag() {
+  drag = null;
+  document.body.classList.remove('is-dragging');
+}
+
 // --- Library Drag ---
 function startLibraryDrag(e, catalogItem) {
   e.preventDefault();
@@ -608,15 +613,20 @@ function startElementDrag(e, elementId) {
   const coords = canvasCoords(e);
   const pinY = PIN_HOLE_START + (el.pinRow * PIN_HOLE_SPACING);
 
+  // Compute X offset from the bay center so bay detection is symmetric
+  const bayCenter = (state.tracks[el.bayIndex].x + TRACK_WIDTH + state.tracks[el.bayIndex + 1].x) / 2;
+
   drag = {
     type: 'element',
     elementId,
     origBayIndex: el.bayIndex,
     origPinRow: el.pinRow,
     origFilename: el.filename,
+    offsetX: coords.x - bayCenter,
     offsetY: coords.y - pinY,
   };
 
+  document.body.classList.add('is-dragging');
   render();
 }
 
@@ -666,11 +676,16 @@ document.addEventListener('mousemove', (e) => {
     const el = state.elements.find(x => x.id === drag.elementId);
     if (!el) return;
 
-    const bayIndex = detectBay(coords.x);
-    if (bayIndex !== null) {
-      const pinRow = nearestPinRow(coords.y - drag.offsetY, state.tracks[bayIndex].filename);
-      const bayWidth = getBayWidth(bayIndex);
-      el.bayIndex = bayIndex;
+    // Use bay-center-relative position so switching is symmetric regardless of grab point
+    const detectedBay = detectBay(coords.x - drag.offsetX);
+    const newBay = (detectedBay !== null) ? detectedBay : el.bayIndex;
+
+    const pinRow = nearestPinRow(coords.y - drag.offsetY, state.tracks[newBay].filename);
+    const changed = newBay !== el.bayIndex || pinRow !== el.pinRow;
+
+    if (changed) {
+      const bayWidth = getBayWidth(newBay);
+      el.bayIndex = newBay;
       el.pinRow = pinRow;
       el.filename = getMatchingFilename(el.filename, bayWidth);
       render();
@@ -756,7 +771,7 @@ document.addEventListener('mouseup', (e) => {
         }
       }
     }
-    drag = null;
+    endDrag();
     return;
   }
 
@@ -766,7 +781,7 @@ document.addEventListener('mouseup', (e) => {
     // Remove .selected without full re-render to avoid flicker (hover CSS takes over)
     const domEl = canvas.querySelector('.element.selected');
     if (domEl) domEl.classList.remove('selected');
-    drag = null;
+    endDrag();
     return;
   }
 
@@ -775,7 +790,7 @@ document.addEventListener('mouseup', (e) => {
     // Auto-swap elements in affected bays
     autoSwapAllBays();
     render();
-    drag = null;
+    endDrag();
     return;
   }
 });
@@ -978,7 +993,7 @@ document.addEventListener('keydown', (e) => {
           el.filename = drag.origFilename;
         }
       }
-      drag = null;
+      endDrag();
       render();
     }
     state.selectedId = null;
@@ -1728,8 +1743,8 @@ async function init() {
   await preloadSVGs();
   populateLibrary();
   initDefaultState();
-  render();
   zoomToFit();
+  render();
 
   // Cost panel collapse
   const costHeader = document.getElementById('cost-header');

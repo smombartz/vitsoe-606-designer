@@ -275,6 +275,10 @@ body {
   opacity: 1;
 }
 
+body.is-dragging .element-dimensions {
+  display: none;
+}
+
 /* ── Bay & Total Dimension Labels ── */
 .bay-label {
   position: absolute;
