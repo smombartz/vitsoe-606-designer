@@ -246,17 +246,57 @@ clearBtn.addEventListener('click', () => {
 
 zoomInBtn.addEventListener('click', () => setZoom(state.zoom + 0.1));
 zoomOutBtn.addEventListener('click', () => setZoom(state.zoom - 0.1));
-zoomFitBtn.addEventListener('click', () => {
-  // Fit tallest track on screen and reset pan
-  const maxH = state.tracks.reduce((max, t) => {
+function zoomToFit() {
+  if (state.tracks.length === 0) return;
+
+  const firstTrack = state.tracks[0];
+  const lastTrack = state.tracks[state.tracks.length - 1];
+
+  // Find full content bounds including elements that extend past tracks
+  let minX = firstTrack.x;
+  let maxX = lastTrack.x + TRACK_WIDTH;
+  let maxH = 0;
+  state.tracks.forEach(t => {
     const m = ELEMENT_META[t.filename];
-    return m ? Math.max(max, m.svgHeight) : max;
-  }, 2000);
-  const viewH = canvasWrapper.clientHeight - 40;
-  panX = 0;
-  panY = 0;
-  setZoom(viewH / maxH);
-});
+    if (m && m.svgHeight > maxH) maxH = m.svgHeight;
+  });
+  state.elements.forEach(el => {
+    const meta = ELEMENT_META[el.filename];
+    if (!meta) return;
+    const rt = state.tracks[el.bayIndex + 1];
+    if (!rt) return;
+    const left = rt.x - meta.svgWidth + meta.rightOffset;
+    const right = left + meta.svgWidth;
+    if (left < minX) minX = left;
+    if (right > maxX) maxX = right;
+  });
+
+  const contentW = maxX - minX;
+  const contentH = maxH;
+
+  // Account for canvas-wrapper CSS padding (124px left, 24px right/top/bottom)
+  const style = getComputedStyle(canvasWrapper);
+  const padL = parseFloat(style.paddingLeft) || 0;
+  const padR = parseFloat(style.paddingRight) || 0;
+  const padT = parseFloat(style.paddingTop) || 0;
+  const padB = parseFloat(style.paddingBottom) || 0;
+  const viewW = canvasWrapper.clientWidth - padL - padR;
+  const viewH = canvasWrapper.clientHeight - padT - padB;
+
+  const zoom = Math.min(viewW / contentW, viewH / contentH, 1) * 0.92;
+  state.zoom = Math.max(0.1, Math.min(1.5, zoom));
+
+  // Center the content in the usable viewport area
+  const scaledW = contentW * state.zoom;
+  const scaledH = contentH * state.zoom;
+  panX = (viewW - scaledW) / 2 - minX * state.zoom - 90;
+  panY = (viewH - scaledH) / 2;
+
+  updateCanvasTransform();
+  zoomLevelEl.textContent = Math.round(state.zoom * 100) + '%';
+}
+
+zoomFitBtn.addEventListener('click', zoomToFit);
 
 // Ctrl/Cmd + scroll to zoom
 canvasWrapper.addEventListener('wheel', (e) => {
@@ -293,6 +333,12 @@ function render() {
     return b.pinRow - a.pinRow;
   });
   sorted.forEach((el, i) => renderElement(el, i));
+
+  // Render bay width labels between each pair of tracks
+  renderBayLabels();
+
+  // Render total dimensions above the unit
+  renderTotalDimensions();
 
   // Update cost calculator
   updateCostPanel();
@@ -365,6 +411,60 @@ function renderElement(el, stackIndex) {
   }
 
   canvas.appendChild(div);
+}
+
+function renderBayLabels() {
+  if (state.tracks.length < 2) return;
+  const invScale = 1 / state.zoom;
+
+  for (let i = 0; i < state.tracks.length - 1; i++) {
+    const leftTrack = state.tracks[i];
+    const rightTrack = state.tracks[i + 1];
+    const leftMeta = ELEMENT_META[leftTrack.filename];
+    const rightMeta = ELEMENT_META[rightTrack.filename];
+
+    const bayLeft = leftTrack.x + TRACK_WIDTH;
+    const bayRight = rightTrack.x;
+    const distancePx = bayRight - bayLeft;
+    const distanceCm = (distancePx / 10).toFixed(1);
+
+    const label = document.createElement('div');
+    label.className = 'bay-label';
+    label.textContent = distanceCm + ' cm';
+    label.style.left = (bayLeft + distancePx / 2) + 'px';
+    // Position below the shorter track
+    const trackHeight = Math.min(leftMeta.svgHeight, rightMeta.svgHeight);
+    label.style.top = (trackHeight + 20) + 'px';
+    label.style.transform = 'translateX(-50%) scale(' + invScale + ')';
+    canvas.appendChild(label);
+  }
+}
+
+function renderTotalDimensions() {
+  if (state.tracks.length < 2) return;
+  const invScale = 1 / state.zoom;
+
+  const firstTrack = state.tracks[0];
+  const lastTrack = state.tracks[state.tracks.length - 1];
+  const totalWidthPx = lastTrack.x + TRACK_WIDTH - firstTrack.x;
+  const totalWidthCm = (totalWidthPx / 10).toFixed(1);
+
+  // Height from tallest track
+  let maxHeight = 0;
+  state.tracks.forEach(t => {
+    const meta = ELEMENT_META[t.filename];
+    if (meta.svgHeight > maxHeight) maxHeight = meta.svgHeight;
+  });
+  const totalHeightCm = (maxHeight / 10).toFixed(0);
+
+  const label = document.createElement('div');
+  label.className = 'total-dimensions';
+  label.textContent = totalWidthCm + ' cm wide  ×  ' + totalHeightCm + ' cm tall';
+  label.style.left = firstTrack.x + 'px';
+  label.style.top = '-40px';
+  label.style.transform = 'scale(' + invScale + ')';
+  label.style.transformOrigin = 'bottom left';
+  canvas.appendChild(label);
 }
 
 // ============================================================
@@ -1062,11 +1162,11 @@ function populateLibrary() {
 
     const heading = document.createElement('h3');
     heading.className = 'collapsible-header';
-    heading.innerHTML = '<span class="collapse-arrow">↓</span> ' + (categoryLabels[cat] || cat);
+    heading.innerHTML = '<span class="collapse-arrow">→</span> ' + (categoryLabels[cat] || cat);
     section.appendChild(heading);
 
     const content = document.createElement('div');
-    content.className = 'collapsible-content';
+    content.className = 'collapsible-content collapsed';
 
     items.forEach(item => {
       const div = document.createElement('div');
@@ -1306,6 +1406,305 @@ function initDefaultState() {
 }
 
 // ============================================================
+// Export Functions
+// ============================================================
+
+function getExportBounds() {
+  if (state.tracks.length === 0) return null;
+  const firstTrack = state.tracks[0];
+  const lastTrack = state.tracks[state.tracks.length - 1];
+  let maxHeight = 0;
+  state.tracks.forEach(t => {
+    const meta = ELEMENT_META[t.filename];
+    if (meta.svgHeight > maxHeight) maxHeight = meta.svgHeight;
+  });
+  // Find the leftmost edge of any element (they extend left of the first track due to isometric depth)
+  let minX = firstTrack.x;
+  state.elements.forEach(el => {
+    const meta = ELEMENT_META[el.filename];
+    if (!meta) return;
+    const rightTrack = state.tracks[el.bayIndex + 1];
+    if (!rightTrack) return;
+    const left = rightTrack.x - meta.svgWidth + meta.rightOffset;
+    if (left < minX) minX = left;
+  });
+
+  const padding = 120;
+  const x = minX - padding;
+  const y = -padding;
+  const w = (lastTrack.x + TRACK_WIDTH - minX) + padding * 2;
+  const h = maxHeight + padding * 2;
+  return { x, y, w, h };
+}
+
+function buildExportSVG() {
+  const bounds = getExportBounds();
+  if (!bounds) return null;
+
+  let svgContent = '';
+
+  // White background
+  svgContent += '<rect x="' + bounds.x + '" y="' + bounds.y + '" width="' + bounds.w + '" height="' + bounds.h + '" fill="white"/>';
+
+  // Helper: wrap cached SVG as a nested <svg> with position and size,
+  // preserving the original viewBox so geometry renders correctly
+  function embedSVG(filename, x, y, w, h) {
+    const raw = svgCache[filename];
+    if (!raw) return '';
+    // Extract the original viewBox if present
+    const vbMatch = raw.match(/viewBox="([^"]+)"/i);
+    const vb = vbMatch ? vbMatch[1] : '0 0 ' + w + ' ' + h;
+    // Extract inner content (everything between <svg ...> and </svg>)
+    const innerMatch = raw.match(/<svg[^>]*>([\s\S]*)<\/svg>/i);
+    const inner = innerMatch ? innerMatch[1] : '';
+    return '<svg x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" viewBox="' + vb + '" xmlns="http://www.w3.org/2000/svg">' + inner + '</svg>';
+  }
+
+  // Tracks
+  state.tracks.forEach(track => {
+    const meta = ELEMENT_META[track.filename];
+    svgContent += embedSVG(track.filename, track.x, 0, meta.svgWidth, meta.svgHeight);
+  });
+
+  // Elements (sorted for z-order)
+  const sorted = [...state.elements].sort((a, b) => {
+    if (a.bayIndex !== b.bayIndex) return a.bayIndex - b.bayIndex;
+    return b.pinRow - a.pinRow;
+  });
+
+  sorted.forEach(el => {
+    const meta = ELEMENT_META[el.filename];
+    if (!meta) return;
+    const rightTrack = state.tracks[el.bayIndex + 1];
+    if (!rightTrack) return;
+    const left = rightTrack.x - meta.svgWidth + meta.rightOffset;
+    const top = PIN_HOLE_START + (el.pinRow * PIN_HOLE_SPACING);
+    svgContent += embedSVG(el.filename, left, top, meta.svgWidth, meta.svgHeight);
+  });
+
+  // Bay labels
+  for (let i = 0; i < state.tracks.length - 1; i++) {
+    const leftTrack = state.tracks[i];
+    const rightTrack = state.tracks[i + 1];
+    const bayLeft = leftTrack.x + TRACK_WIDTH;
+    const bayRight = rightTrack.x;
+    const distancePx = bayRight - bayLeft;
+    const distanceCm = (distancePx / 10).toFixed(1);
+    const leftMeta = ELEMENT_META[leftTrack.filename];
+    const rightMeta = ELEMENT_META[rightTrack.filename];
+    const trackHeight = Math.min(leftMeta.svgHeight, rightMeta.svgHeight);
+    const cx = bayLeft + distancePx / 2;
+    svgContent += '<text x="' + cx + '" y="' + (trackHeight + 40) + '" text-anchor="middle" font-size="28" fill="#bbb" font-family="sans-serif">' + distanceCm + ' cm</text>';
+  }
+
+  // Total dimensions
+  if (state.tracks.length >= 2) {
+    const firstTrack = state.tracks[0];
+    const lastTrack = state.tracks[state.tracks.length - 1];
+    const totalW = ((lastTrack.x + TRACK_WIDTH - firstTrack.x) / 10).toFixed(1);
+    let maxH = 0;
+    state.tracks.forEach(t => { const m = ELEMENT_META[t.filename]; if (m.svgHeight > maxH) maxH = m.svgHeight; });
+    const totalH = (maxH / 10).toFixed(0);
+    svgContent += '<text x="' + firstTrack.x + '" y="' + (bounds.y + 40) + '" font-size="28" fill="#bbb" font-family="sans-serif">' + totalW + ' cm wide × ' + totalH + ' cm tall</text>';
+  }
+
+  const svg = '<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="' + bounds.w + '" height="' + bounds.h + '" viewBox="' + bounds.x + ' ' + bounds.y + ' ' + bounds.w + ' ' + bounds.h + '">' + svgContent + '</svg>';
+  return svg;
+}
+
+function downloadFile(data, filename, mimeType) {
+  const blob = new Blob([data], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function exportAsSVG() {
+  const svg = buildExportSVG();
+  if (!svg) return;
+  downloadFile(svg, 'vitsoe-606-design.svg', 'image/svg+xml');
+}
+
+function exportAsPNG() {
+  const svgStr = buildExportSVG();
+  if (!svgStr) return;
+
+  const bounds = getExportBounds();
+  const scale = 2; // 2x for high-res
+  const canvas = document.createElement('canvas');
+  canvas.width = bounds.w * scale;
+  canvas.height = bounds.h * scale;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(scale, scale);
+
+  const img = new Image();
+  const svgBlob = new Blob([svgStr], { type: 'image/svg+xml;charset=utf-8' });
+  const url = URL.createObjectURL(svgBlob);
+
+  img.onload = function () {
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, bounds.w, bounds.h);
+    ctx.drawImage(img, 0, 0, bounds.w, bounds.h);
+    URL.revokeObjectURL(url);
+
+    canvas.toBlob(function (blob) {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'vitsoe-606-design.png';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }, 'image/png');
+  };
+  img.src = url;
+}
+
+function exportAsPDF(includePrices) {
+  const svgStr = buildExportSVG();
+  if (!svgStr) return;
+
+  const bounds = getExportBounds();
+  if (!window.jspdf) {
+    alert('PDF library failed to load. Please check your internet connection and reload.');
+    return;
+  }
+  const jsPDF = window.jspdf.jsPDF;
+
+  // Landscape A4 for wide designs
+  const pageW = 297;
+  const pageH = 210;
+  const margin = 15;
+  const contentW = pageW - margin * 2;
+
+  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+
+  // Title
+  doc.setFontSize(18);
+  doc.setTextColor(0);
+  doc.text('Vitsoe 606 Configuration', margin, margin + 6);
+
+  // Total dimensions subtitle
+  if (state.tracks.length >= 2) {
+    const firstTrack = state.tracks[0];
+    const lastTrack = state.tracks[state.tracks.length - 1];
+    const totalW = ((lastTrack.x + TRACK_WIDTH - firstTrack.x) / 10).toFixed(1);
+    let maxH = 0;
+    state.tracks.forEach(t => { const m = ELEMENT_META[t.filename]; if (m.svgHeight > maxH) maxH = m.svgHeight; });
+    doc.setFontSize(10);
+    doc.setTextColor(150);
+    doc.text(totalW + ' cm wide  ×  ' + (maxH / 10).toFixed(0) + ' cm tall', margin, margin + 12);
+  }
+
+  // Render design image
+  const imgTop = margin + 18;
+  const designScale = contentW / bounds.w;
+  const imgH = bounds.h * designScale;
+
+  // Convert SVG to image, then add to PDF
+  const canvas = document.createElement('canvas');
+  const pxScale = 3;
+  canvas.width = bounds.w * pxScale;
+  canvas.height = bounds.h * pxScale;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(pxScale, pxScale);
+
+  const img = new Image();
+  const svgBlob = new Blob([svgStr], { type: 'image/svg+xml;charset=utf-8' });
+  const url = URL.createObjectURL(svgBlob);
+
+  img.onload = function () {
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, bounds.w, bounds.h);
+    ctx.drawImage(img, 0, 0, bounds.w, bounds.h);
+    URL.revokeObjectURL(url);
+
+    const imgData = canvas.toDataURL('image/png');
+    const clampedH = Math.min(imgH, pageH - imgTop - margin - 10);
+    const clampedW = clampedH / imgH * contentW;
+    doc.addImage(imgData, 'PNG', margin, imgTop, clampedW, clampedH);
+
+    // Price list
+    if (includePrices) {
+      let y = imgTop + clampedH + 10;
+
+      // Check if we need a new page
+      if (y > pageH - margin - 30) {
+        doc.addPage();
+        y = margin + 6;
+      }
+
+      doc.setFontSize(12);
+      doc.setTextColor(0);
+      doc.text('Price List', margin, y);
+      y += 7;
+
+      // Gather cost items
+      const counts = {};
+      state.tracks.forEach(t => { counts[t.filename] = (counts[t.filename] || 0) + 1; });
+      state.elements.forEach(el => { counts[el.filename] = (counts[el.filename] || 0) + 1; });
+
+      const entries = Object.entries(counts).sort((a, b) => {
+        const pa = parseElementFilename(a[0]);
+        const pb = parseElementFilename(b[0]);
+        if (pa.category === 'etrack' && pb.category !== 'etrack') return -1;
+        if (pa.category !== 'etrack' && pb.category === 'etrack') return 1;
+        return getPriceLabel(a[0]).localeCompare(getPriceLabel(b[0]));
+      });
+
+      doc.setFontSize(9);
+      let total = 0;
+
+      // Table header
+      doc.setTextColor(150);
+      doc.text('Item', margin, y);
+      doc.text('Qty', margin + 140, y, { align: 'right' });
+      doc.text('Unit', margin + 165, y, { align: 'right' });
+      doc.text('Total', margin + 195, y, { align: 'right' });
+      y += 1;
+      doc.setDrawColor(200);
+      doc.line(margin, y, margin + 195, y);
+      y += 4;
+
+      doc.setTextColor(60);
+      entries.forEach(([filename, count]) => {
+        if (y > pageH - margin - 10) {
+          doc.addPage();
+          y = margin + 6;
+        }
+        const unitPrice = getPrice(filename);
+        const lineTotal = unitPrice * count;
+        total += lineTotal;
+
+        doc.text(getPriceLabel(filename), margin, y);
+        doc.text(String(count), margin + 140, y, { align: 'right' });
+        doc.text('$' + unitPrice.toLocaleString(), margin + 165, y, { align: 'right' });
+        doc.text('$' + lineTotal.toLocaleString(), margin + 195, y, { align: 'right' });
+        y += 5;
+      });
+
+      // Total line
+      y += 1;
+      doc.setDrawColor(0);
+      doc.setLineWidth(0.5);
+      doc.line(margin + 130, y, margin + 195, y);
+      y += 5;
+      doc.setFontSize(11);
+      doc.setTextColor(0);
+      doc.text('Total', margin + 130, y);
+      doc.text('$' + total.toLocaleString(), margin + 195, y, { align: 'right' });
+    }
+
+    doc.save('vitsoe-606-design.pdf');
+  };
+  img.src = url;
+}
+
+// ============================================================
 // Init
 // ============================================================
 
@@ -1329,8 +1728,8 @@ async function init() {
   await preloadSVGs();
   populateLibrary();
   initDefaultState();
-  setZoom(state.zoom);
   render();
+  zoomToFit();
 
   // Cost panel collapse
   const costHeader = document.getElementById('cost-header');
@@ -1341,6 +1740,28 @@ async function init() {
       costHeader.querySelector('.collapse-arrow').textContent = isCollapsed ? '→' : '↓';
     });
   }
+
+  // Export panel collapse
+  const exportHeader = document.getElementById('export-header');
+  const exportBody = document.getElementById('export-body');
+  if (exportHeader && exportBody) {
+    exportHeader.addEventListener('click', () => {
+      const isCollapsed = exportBody.classList.toggle('collapsed');
+      exportHeader.querySelector('.collapse-arrow').textContent = isCollapsed ? '→' : '↓';
+    });
+  }
+
+  // Export buttons
+  document.getElementById('export-png').addEventListener('click', exportAsPNG);
+  document.getElementById('export-svg').addEventListener('click', exportAsSVG);
+  document.getElementById('export-pdf').addEventListener('click', () => {
+    const includePrices = document.getElementById('pdf-include-prices').checked;
+    exportAsPDF(includePrices);
+  });
+
+  // Show/hide price checkbox only near PDF button
+  const pdfPriceOption = document.getElementById('pdf-price-option');
+  pdfPriceOption.classList.add('visible');
 }
 
 init();

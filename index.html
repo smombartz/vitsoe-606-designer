@@ -20,6 +20,17 @@
       </div>
     </div>
     <div id="library-items"></div>
+    <div id="export-panel">
+      <h3 class="collapsible-header" id="export-header"><span class="collapse-arrow">→</span> Export</h3>
+      <div id="export-body" class="collapsible-content collapsed">
+        <button class="export-btn" id="export-png">Export PNG</button>
+        <button class="export-btn" id="export-svg">Export SVG</button>
+        <button class="export-btn" id="export-pdf">Export PDF</button>
+        <label class="export-option" id="pdf-price-option">
+          <input type="checkbox" id="pdf-include-prices" checked> Include price list
+        </label>
+      </div>
+    </div>
   </div>
   <div id="canvas-wrapper">
     <div id="canvas"></div>
@@ -33,6 +44,7 @@
   </div>
   <div id="context-menu" class="context-menu hidden"></div>
   <div id="drag-ghost" class="drag-ghost hidden"></div>
+  <script src="https://unpkg.com/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
   <script src="main.js"></script>
 </body>
 </html>

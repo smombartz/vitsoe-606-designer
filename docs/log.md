@@ -1,5 +1,42 @@
 # Change Log
 
+## 2026-04-08 - Export as PNG, SVG, and PDF
+
+**What Changed:**
+- Added Export panel to library sidebar with PNG, SVG, and PDF export buttons
+- PNG: 2x resolution render of the design with white background
+- SVG: Full vector export including all elements, tracks, bay labels, and total dimensions
+- PDF: Landscape A4 with title, dimensions subtitle, rendered design image, and optional price list table
+- "Include price list" checkbox for PDF export (checked by default)
+- Added jsPDF v2.5.2 via CDN for PDF generation
+- Export panel is collapsible like other sidebar sections
+
+**Why:**
+- Users need to export their configurations for sharing, printing, or purchasing
+
+**Files Modified:**
+- `index.html` — added export panel HTML and jsPDF CDN script
+- `style.css` — added export panel styles
+- `main.js` — added `buildExportSVG()`, `exportAsPNG()`, `exportAsSVG()`, `exportAsPDF()`, export button wiring
+
+---
+
+## 2026-04-08 - Bay width labels and total unit dimensions
+
+**What Changed:**
+- Added bay width labels (e.g. "91.2 cm") in light grey centered between each pair of e-tracks, positioned below the tracks
+- Added total unit dimensions ("X cm wide × Y cm tall") above the first e-track in the top left
+- Both labels counter-scale against zoom to stay readable at any zoom level
+
+**Why:**
+- Users need to see bay distances and overall unit dimensions while designing
+
+**Files Modified:**
+- `main.js` — added `renderBayLabels()` and `renderTotalDimensions()` called from `render()`
+- `style.css` — added `.bay-label` and `.total-dimensions` styles
+
+---
+
 ## 2026-04-07 - Show element dimensions on hover
 
 **What Changed:**
